@@ -31,7 +31,7 @@ services:
       # Minio Console
       - "traefik.http.routers.minio-console.rule=Host(`minio-console.${BASE_DOMAIN}`)"
       - "traefik.http.routers.minio-console.entrypoints=websecure"
-      - "traefik.http.routers.minio-console.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.minio-console.tls.certresolver=cloudflare"
       - "traefik.http.routers.minio-console.service=minio-console"
       - "traefik.http.services.minio-console.loadbalancer.server.port=9001"
 
