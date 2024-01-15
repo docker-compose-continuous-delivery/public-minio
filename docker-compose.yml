@@ -6,7 +6,7 @@ services:
     image: minio/minio
     container_name: public-minio
     restart: always
-    command: server --console-address ":9001"
+    command: server
     volumes:
       - public-minio:/data
     environment:
