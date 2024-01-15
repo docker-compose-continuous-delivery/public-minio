@@ -11,7 +11,9 @@ services:
       - public-minio:/data
     environment:
       MINIO_VOLUMES: "/data"
-      MINIO_SERVER_URL: "https://minio-api.${BASE_DOMAIN}"
+      MINIO_DOMAIN: "minio.${BASE_DOMAIN}"
+      MINIO_SERVER_URL: "https://minio.${BASE_DOMAIN}"
+      MINIO_BROWSER_REDIRECT_URL: "https://console.minio.${BASE_DOMAIN}"
     env_file:
       - .minio.env
     networks:
@@ -19,13 +21,15 @@ services:
     labels:
       - "traefik.enable=true"
 
-      - "traefik.http.routers.minio-api.rule=Host(`minio-api.${BASE_DOMAIN}`)"
+      # Minio API
+      - "traefik.http.routers.minio-api.rule=Host(`minio.${BASE_DOMAIN}`)"
       - "traefik.http.routers.minio-api.entrypoints=websecure"
       - "traefik.http.routers.minio-api.tls.certresolver=cloudflare"
       - "traefik.http.routers.minio-api.service=minio-api"
       - "traefik.http.services.minio-api.loadbalancer.server.port=9000"
 
-      - "traefik.http.routers.minio-console.rule=Host(`minio.${BASE_DOMAIN}`)"
+      # Minio Console
+      - "traefik.http.routers.minio-console.rule=Host(`console.minio.${BASE_DOMAIN}`)"
       - "traefik.http.routers.minio-console.entrypoints=websecure"
       - "traefik.http.routers.minio-console.tls.certresolver=cloudflare"
       - "traefik.http.routers.minio-console.service=minio-console"
