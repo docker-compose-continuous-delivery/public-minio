@@ -6,23 +6,30 @@ services:
     image: minio/minio
     container_name: public-minio
     restart: always
-    command: server
+    command: server --console-address ":9001"
     volumes:
       - public-minio:/data
     environment:
       MINIO_VOLUMES: "/data"
-      MINIO_SERVER_URL: "https://minio.${BASE_DOMAIN}"
+      MINIO_SERVER_URL: "https://minio-api.${BASE_DOMAIN}"
     env_file:
       - .minio.env
     networks:
       - traefik
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.minio.rule=Host(`minio.${BASE_DOMAIN}`)"
-      - "traefik.http.routers.minio.entrypoints=websecure"
-      - "traefik.http.routers.minio.tls.certresolver=cloudflare"
-      - "traefik.http.routers.minio.service=minio"
-      - "traefik.http.services.minio.loadbalancer.server.port=9000"
+
+      - "traefik.http.routers.minio-api.rule=Host(`minio-api.${BASE_DOMAIN}`)"
+      - "traefik.http.routers.minio-api.entrypoints=websecure"
+      - "traefik.http.routers.minio-api.tls.certresolver=cloudflare"
+      - "traefik.http.routers.minio-api.service=minio"
+      - "traefik.http.services.minio-api.loadbalancer.server.port=9000"
+
+      - "traefik.http.routers.minio-console.rule=Host(`minio.${BASE_DOMAIN}`)"
+      - "traefik.http.routers.minio-console.entrypoints=websecure"
+      - "traefik.http.routers.minio-console.tls.certresolver=cloudflare"
+      - "traefik.http.routers.minio-console.service=minio"
+      - "traefik.http.services.minio-console.loadbalancer.server.port=9001"
 
 networks:
   traefik:
